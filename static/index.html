@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <script type="module" src="/static/js/script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <title>TODO-App</title>
+    <style>
+      .todo {
+        max-width: 750px;
+        margin: 50px auto;
+        border-radius: 10px 10px 0 0;
+        border: 1px solid #cc9a9a;
+      }
+
+      .todo__heading {
+        background-color: #cc9a9a;
+        color: white;
+        text-align: center;
+        font-size: 35px;
+        font-weight: 700;
+        padding: 15px;
+        border-radius: 10px 10px 0 0;
+      }
+
+      .todo__input {
+        display: flex;
+        align-items: center;
+      }
+
+      .todo__input-field {
+        width: 95%;
+        padding: 0 10px 0 10px;
+        font-size: 20px;
+        outline: none;
+        border: none;
+      }
+
+      .todo__btns {
+        background-color: #0f6a75;
+        padding: 10px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .todo__btns button {
+        border: none;
+        outline: none;
+        border-radius: 3px;
+        padding: 3px 12px;
+        font-size: 15px;
+        color: white;
+        font-weight: 500;
+      }
+
+      .todo__complete {
+        background-color: #00adb3;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .todo__complete::before {
+        content: "";
+        position: absolute;
+        background-color: #039398;
+        width: 100%;
+        height: 100%;
+        left: -100%;
+        top: 0;
+        transition: left 0.3s ease;
+        z-index: 0;
+      }
+
+      .todo__complete span {
+        position: relative;
+        z-index: 1;
+      }
+
+      .todo__complete:hover::before {
+        left: 0;
+      }
+
+      .todo__delete {
+        background-color: #d20505;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .todo__delete::before {
+        content: "";
+        position: absolute;
+        background-color: #a60202;
+        width: 100%;
+        height: 100%;
+        right: -100%;
+        top: 0;
+        transition: right 0.3s ease;
+        z-index: 0;
+      }
+
+      .todo__delete span {
+        position: relative;
+        z-index: 1;
+      }
+
+      .todo__delete:hover::before {
+        right: 0;
+      }
+
+      .todo__logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 5%;
+        font-size: 20px;
+        padding: 10px;
+        background-color: #599959;
+      }
+
+      .todo__logo:hover {
+        cursor: pointer;
+        background-color: #1d6d1d;
+      }
+
+      .todo__list {
+        list-style: none;
+        margin: 0;
+        padding: 15px;
+        background-color: #4271c9;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .no-data {
+        color: white;
+        font-size: 20px;
+        font-weight: 500;
+        text-align: center;
+      }
+
+      .todo__list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .todo__list-task {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .todo__list-task-check {
+        background-color: white;
+        width: 15px;
+        height: 15px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .todo__list-task-check i {
+        color: black;
+      }
+
+      .todo__list-task-check:hover {
+        cursor: pointer;
+      }
+
+      .todo__list-task-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: white;
+      }
+
+      .todo__list-icons {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .fa-solid {
+        color: white;
+      }
+
+      .fa-solid:hover {
+        cursor: pointer;
+      }
+
+      .fa-pen-to-square:hover {
+        color: #efff00;
+      }
+
+      .fa-trash:hover {
+        color: #d20505;
+      }
+
+      .popup__container {
+        background-color: rgba(0, 0, 0, 0.3);
+        width: 100%;
+        height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        display: none;
+      }
+
+      .todo__popup {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 15px 30px;
+        border-radius: 5px;
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      .todo__popup p {
+        font-size: 25px;
+        text-align: center;
+      }
+
+      .todo__popup form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .popup__task,
+      .popup__status {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .popup__task input {
+        width: 500px;
+        border: 1px solid black;
+      }
+
+      .popup__status-options {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .popup__status-options > label:hover,
+      .popup__status-options > input:hover {
+        cursor: pointer;
+      }
+
+      .popup__btns {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+      }
+
+      .popup__btns button {
+        outline: none;
+        border: none;
+        padding: 3px 15px;
+        font-size: 15px;
+        font-weight: 500;
+        border-radius: 3px;
+        color: white;
+      }
+
+      .popup__submit {
+        background-color: #00adb3;
+      }
+
+      .popup__submit:hover {
+        background-color: #039398;
+        transition: 0.3s ease-in-out;
+      }
+
+      .popup__cancel {
+        background-color: #d20505;
+      }
+
+      .popup__cancel:hover {
+        background-color: #a60202;
+        transition: 0.3s ease-in-out;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="todo">
+      <div class="todo__heading">Daily Todo Lists</div>
+      <div class="todo__input">
+        <input
+          type="text"
+          name="todo"
+          id="todo"
+          class="todo__input-field"
+          placeholder="Enter New Task"
+        />
+        <div class="todo__logo">
+          <i class="fa-solid fa-plus"></i>
+        </div>
+      </div>
+      <div class="todo__btns">
+        <button class="todo__complete"><span>Complete All</span></button>
+        <button class="todo__delete"><span>Delete All</span></button>
+      </div>
+      {{if gt (len .) 0}}
+      <ul class="todo__list">
+        {{range .}}
+        <li class="todo__list-item">
+          <div class="todo__list-task">
+            <div class="todo__list-task-check" id="{{.Status}}-{{.ID}}">
+              {{if eq .Status "COMPLETED"}}
+              <i class="fa-solid fa-check" id="{{.Status}}-{{.ID}}-check"></i>
+              {{end}}
+            </div>
+            <span class="todo__list-task-name">{{.Task}}</span>
+          </div>
+          <div class="todo__list-icons">
+            <i class="fa-solid fa-pen-to-square" id="EDIT-{{.ID}}"></i>
+            <i class="fa-solid fa-trash" id="DELETE-{{.ID}}"></i>
+          </div>
+        </li>
+        {{end}}
+      </ul>
+      {{else}}
+      <div class="todo__list no-data">No data to show</div>
+      {{end}}
+    </div>
+    <div class="popup__container">
+      <div class="todo__popup">
+        <p>Edit Task</p>
+        <div>
+          <form onsubmit="handleEdit(event)">
+            <label for="editTask" class="popup__task">
+              Task Name:
+              <input
+                type="text"
+                name="editTask"
+                id="editTask"
+                class="todo__input-field"
+              />
+            </label>
+            <div class="popup__status">
+              Task Status:
+              <div class="popup__status-options">
+                <label for="pending">
+                  <input
+                    type="radio"
+                    name="status"
+                    id="pending"
+                    value="PENDING"
+                  />
+                  Pending
+                </label>
+                <label for="completed">
+                  <input
+                    type="radio"
+                    name="status"
+                    id="completed"
+                    value="COMPLETED"
+                  />
+                  Completed
+                </label>
+              </div>
+            </div>
+            <div class="popup__btns">
+              <button type="submit" class="popup__submit">Submit</button>
+              <button
+                type="button"
+                class="popup__cancel"
+                onclick="closePopup()"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
