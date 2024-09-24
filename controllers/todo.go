@@ -8,8 +8,8 @@ import (
 	"strconv"
 
 	"github.com/amulya-leapfrog/go-todo/services"
-	htmlGenerator "github.com/amulya-leapfrog/go-todo/static"
 	"github.com/amulya-leapfrog/go-todo/structs"
+	htmlGenerator "github.com/amulya-leapfrog/go-todo/utils"
 	"github.com/go-chi/chi"
 )
 
