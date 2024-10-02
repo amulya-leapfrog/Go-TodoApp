@@ -7,13 +7,18 @@ export async function fetchTaskById(id) {
   let taskId = 0;
 
   try {
-    const response = await axios.get(`http://localhost:8000/todo/${id}`);
+    const response = await fetch(`/todo/${id}`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
     payload = {
       ...payload,
-      task: response.data.task,
-      status: response.data.status,
+      task: data.task,
+      status: data.status,
     };
-    taskId = response.data.id;
+    taskId = data.id;
   } catch (error) {
     alert("Something Went Wrong!");
     console.error("Error fetching todo:", error);
@@ -24,7 +29,18 @@ export async function fetchTaskById(id) {
 
 export async function createTodo(payload) {
   try {
-    await axios.post(`http://localhost:8000/todo/`, payload);
+    const response = await fetch(`/todo/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
     window.location.reload();
   } catch (error) {
     alert("Something Went Wrong!");
@@ -34,7 +50,18 @@ export async function createTodo(payload) {
 
 export async function updateStatus(id, payload) {
   try {
-    await axios.put(`http://localhost:8000/todo/${id}`, payload);
+    const response = await fetch(`/todo/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
     window.location.reload();
   } catch (error) {
     alert("Something Went Wrong!");
@@ -44,7 +71,14 @@ export async function updateStatus(id, payload) {
 
 export async function updateAllTodos() {
   try {
-    await axios.patch("http://localhost:8000/todo/");
+    const response = await fetch(`/todo/`, {
+      method: 'PATCH',
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
     window.location.reload();
   } catch (error) {
     alert("Something Went Wrong!");
@@ -66,7 +100,18 @@ export async function handleEdit(event) {
   };
 
   try {
-    await axios.put(`http://localhost:8000/todo/${taskId}`, payload);
+    const response = await fetch(`/todo/${taskId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
     window.location.reload();
   } catch (error) {
     alert("Something Went Wrong!");
@@ -76,7 +121,14 @@ export async function handleEdit(event) {
 
 export async function deleteTodo(id) {
   try {
-    await axios.delete(`http://localhost:8000/todo/${id}`);
+    const response = await fetch(`/todo/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
     window.location.reload();
   } catch (error) {
     alert("Something Went Wrong!");
@@ -86,7 +138,14 @@ export async function deleteTodo(id) {
 
 export async function deleteAllTodos() {
   try {
-    await axios.delete("http://localhost:8000/todo/");
+    const response = await fetch(`/todo/`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
     window.location.reload();
   } catch (error) {
     alert("Something Went Wrong!");
