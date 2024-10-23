@@ -16,6 +16,8 @@ var (
 	serverPort string
 )
 
+// Main function that starts the cli tool
+
 func main() {
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
